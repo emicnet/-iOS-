@@ -1,0 +1,21 @@
+PODS:
+  - Alamofire (4.4.0)
+  - Eureka (3.0.0)
+  - PKHUD (4.2.1)
+  - SwiftyBeaver (1.2.0)
+
+DEPENDENCIES:
+  - Alamofire
+  - Eureka
+  - PKHUD
+  - SwiftyBeaver
+
+SPEC CHECKSUMS:
+  Alamofire: dc44b1600b800eb63da6a19039a0083d62a6a62d
+  Eureka: f36fd440c3ebb7bfea0a4fbe6f16a05f1cb35906
+  PKHUD: 957ce2a68b3c97a51839b30216120c1dbc0c3a78
+  SwiftyBeaver: ee865c50ec462ff142f232145057818491c2b344
+
+PODFILE CHECKSUM: bbbd645a030e306163b77694ba95c3429b16dfcd
+
+COCOAPODS: 1.2.1

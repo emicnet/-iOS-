@@ -1,0 +1,6 @@
+framework module Pods_WebApiTests {
+  umbrella header "Pods-WebApiTests-umbrella.h"
+
+  export *
+  module * { export * }
+}
