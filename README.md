@@ -63,7 +63,7 @@ enum Router {
 ```
 web api输入参数可以使用json和xml格式。代码示例只使用json格式，如果需要xml格式，可以通过**NSXMLDocument** 生成xml输入参数。发起api调用还要注意该api是使用主账户还是子账户认证，具体调用代码参见Router实现。	
 
-APIRequest定义调用request所遵循的protocol. 目前web api只支持http post方法。异步调用的返回结果CallResult已经统一处理，UI层可以根据CallResult进一步更新UI  
+APIRequest定义调用request所遵循的协议。目前web api只支持http post方法；异步调用的返回结果CallResult已经统一处理，UI层可以根据CallResult进一步更新UI  
 
 		
 	protocol APIRequest {
@@ -72,7 +72,7 @@ APIRequest定义调用request所遵循的protocol. 目前web api只支持http po
   
 	
 #### <A NAME="APIRequest"></A> APIRequest.swift
-APIRequest中实现API调用后response的处理，返回处理结果。
+APIRequest中实现API调用后response的处理，返回处理JSON相应的结果。
 
 	static func verify(_ responseJSON:[String: Any], request:Router) -> CallResult {
 	//api返回结果统一在这里处理
@@ -102,7 +102,7 @@ TaskRequest扩展Router,直接使用iOS URLSession，实现API的Http调用, URL
 #### <A NAME="PKHUD"></A> PKHUD
 [PKHUD](https://github.com/pkluz/PKHUD) Demo 中用于调用结果的展示。
 
-##已知问题&注意事项
+###已知问题&注意事项  
 1.目前Demo使用的账号创建企业用户（/Enterprises/createUser）不成功，调用呼叫中心的接口不成功  
 2.Enterprises/createNumberPair 接口返回跟文档不一致  
 3.调用接口参数的大小写敏感，请参照请求示例，以防调用失败  
