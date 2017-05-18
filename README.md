@@ -102,10 +102,13 @@ TaskRequest扩展Router,直接使用iOS URLSession，实现API的Http调用, URL
 #### <A NAME="PKHUD"></A> PKHUD
 [PKHUD](https://github.com/pkluz/PKHUD) Demo 中用于调用结果的展示。
 
-###已知问题&注意事项  
+### 已知问题&注意事项  
 1.目前Demo使用的账号创建企业用户（/Enterprises/createUser）不成功，调用呼叫中心的接口不成功  
 2.Enterprises/createNumberPair 接口返回跟文档不一致  
 3.调用接口参数的大小写敏感，请参照请求示例，以防调用失败  
-4.目前web api只支持http，所以代码示例使用http方式
-
-
+4.目前web api只支持http，所以代码示例使用http方式  
+5. WebApiTests 测试打电话的用例如果这时候恰好有别的电话打进来，程序无法区分，就会认为测试通过  
+6.字符串的md5算法需要设置swift编译选项 Bridging-Header file
+```
+ #import <CommonCrypto/CommonCrypto.h> 
+```

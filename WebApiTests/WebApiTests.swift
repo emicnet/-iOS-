@@ -10,14 +10,24 @@ import XCTest
 @testable import WebApi
 
 import Alamofire
+import CoreTelephony
 
 class WebApiTests: XCTestCase {
 
     let callbackInput = ["from":"18612441783","to":"13910134045"]
+    let callCenter =  CTCallCenter()
+    var expection:XCTestExpectation?
+    var phoneCall = false
     
     override func setUp() {
         super.setUp()
-        // Put setup code here. This method is called before the invocation of each test method in the class.
+        callCenter.callEventHandler = { (call:CTCall) in
+            log.debug(call.callState)
+            if call.callState == CTCallStateIncoming {
+                self.phoneCall = true
+                self.expection?.fulfill()
+            }
+        }
     }
     
     override func tearDown() {
@@ -63,11 +73,35 @@ class WebApiTests: XCTestCase {
         self.verifyCallbackURL(url, input: callbackInput);
     }
     
-    func testPerformanceExample() {
-        // This is an example of a performance test case.
-        self.measure {
-            // Put the code you want to measure the time of here.
+    func testCallBackPhoneCall() {
+        let apiRequest = AlaRequest.self
+        var callID:String?
+        //Need to create it here or got "API violation - call made to wait without any expectations having been set."
+        expection = expectation(description: "We should get a phone call within 15 seconds")
+        
+        apiRequest.request(Router.Callback(callbackInput)) { (CallResult) in
+            switch CallResult {
+            case .fail:
+                XCTFail("Should get a phone call, but api call failed")
+            case .inCorrectCodeResult(let errorCode, let errorInfo):
+                XCTFail("Although we made api called, server rejected us with \(errorCode) meaning \(errorInfo)")
+            case .inCorrectResult:
+                XCTFail("Server should be really wrong b/c we got respCode = 0, but not expected result!")
+            case .succeed(let result):
+                callID = result["callId"] as? String
+                XCTAssert(callID != nil, "We got a callID \(callID!), but wait to see if we really got a phone call")
+            }
+            log.info("Important!! We are waiting for a phone call, so we can NOT call expection.fulfill() here as other normal async tests do")
+            log.info("Otherwise waitForExpectations will run next, which defeats the whole purpose")
+            log.info("So we need other indicator to show we got async result and call expection.fulfill() when we got phone call")
+            //Do NOT call expection.fulfill() here
+            //Call it in callCenter.callEventHandler
+        }
+        waitForExpectations(timeout: 15) { _ in
+            if !self.phoneCall {
+                log.debug("Got server respone but no phone call in 15 seconds, still a failure, but need to further check why")
+                XCTFail("Got server response, but no phone call")
+            }
         }
     }
-    
 }

@@ -113,6 +113,7 @@ enum Router {
 
 enum CallResult {
     case fail
+    //if inCorrectResult happens it means server is really wrong that respCode = 0 but it doesn't return expected response
     case inCorrectResult([String: Any])
     case inCorrectCodeResult(errorCode:String, errorInfo:String)
     case succeed([String: Any])
