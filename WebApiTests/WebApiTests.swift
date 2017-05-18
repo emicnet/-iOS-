@@ -13,8 +13,8 @@ import Alamofire
 import CoreTelephony
 
 class WebApiTests: XCTestCase {
-
-    let callbackInput = ["from":"18612441783","to":"13910134045"]
+    //公司两个测试号码,实际使用时候需要把 from 替换成本机实际号码
+    let callbackInput = ["from":"17710670549","to":"18512517915"]
     let callCenter =  CTCallCenter()
     var expection:XCTestExpectation?
     var phoneCall = false
@@ -48,13 +48,16 @@ class WebApiTests: XCTestCase {
         XCTAssert(callbackURL.url!.absoluteString.hasPrefix(urlString),"Wrong base url")
         //1 check http body
         let body = callbackURL.httpBody
-        let calldata = ["callBack":["from":"18612441783","to":"13910134045","appId":AccountInfo.appID]]
+        var tmp = callbackInput
+        tmp["appId"] = AccountInfo.appID
+        //["callBack":["from":"17710670549","to":"18512517915","appId":AccountInfo.appID]]
+        let calldata = ["callBack":tmp]
         let jsonData  = try! JSONSerialization.data(withJSONObject: calldata)
         XCTAssert(body==jsonData,"http body set wrong")
         //2 check http header
-        let tmp = callbackURL.allHTTPHeaderFields
-        XCTAssert(tmp != nil,"Failed to set header")
-        let headers = tmp!
+        let tmp2 = callbackURL.allHTTPHeaderFields
+        XCTAssert(tmp2 != nil,"Failed to set header")
+        let headers = tmp2!
         let accept = headers["Accept"]!
         XCTAssert(accept.contains("json"),"Failed to set json header")
         let auth = headers["Authorization"]
@@ -97,6 +100,7 @@ class WebApiTests: XCTestCase {
             //Do NOT call expection.fulfill() here
             //Call it in callCenter.callEventHandler
         }
+        //15秒只是一个经验值，15内应该能回拨回来
         waitForExpectations(timeout: 15) { _ in
             if !self.phoneCall {
                 log.debug("Got server respone but no phone call in 15 seconds, still a failure, but need to further check why")
